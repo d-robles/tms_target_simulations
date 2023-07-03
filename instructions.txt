@@ -1,0 +1,40 @@
+1. Download MRI data into D:\midt\mri\raw
+2. Convert T1 dicom images in MR t1_mpr_ns_sag_p2_iso_32Channel folder into nifti using dcm2nii
+3. Copy T1 nifti image into D:\midt\mri\t1 and rename it to 022_t1.nii
+
+4. Open command window and run: cd /d D:/midt/mri/efield_sim
+
+5. Run in command window: headreco all 022 ../t1/022_t1.nii.gz (going to take approximately 1.5h)
+6. Open PyCharm window and PyCharm project "simnibs_coil_optimization"
+7. Enter the subject ID and target modality into these lines:
+
+tms_opt.fnamehead = path + '022.msh'
+tms_opt.pathfem = path + 'm2m_022\\optimization[target_modality]'
+
+8. Open the subject's T1 image in mricron and enter the target coordinates for a given target
+9. Enter the native space coordinates in mm (blue numbers on slices or numbers in very top left of frame) into this line in the PyCharm script:
+
+tms_opt.target = [X, Y, Z]
+
+10. Open the simnibs_gui (through command window or app), click browse next to the m2m folder field, and select the subject's m2m folder
+11. Double-click on where Fz is estimated to be located on the subject's head mesh in the simnibs_gui
+12. Copy the the coordinates shown in the bottom left underneath the head visualization, X should be 0
+13. Write the Fz coordinates into this line in the PyCharm script:
+
+tms_opt.pos_ydir = [X, Y, Z]
+
+14. Run the script and check if the simulation settings visualization in Gmsh is right
+15. If y-axis orientation of coil needs adjustments, interrupt the script, 
+empty the simulation folder, and move the reference coordinate anterior or posterior of Fz depending on what's necessary
+16. Re-run the script until the reference coordinate is right and let it run to the end (approximately 10 minutes)
+17. When done running, you will see the optimal efield opened in Gmsh
+18. Open the folder containing the optimization results and double-click on 'target.msh'
+19. When this file is done loading in, click File and Open, and then select the efield result (i.e., 022_TMS_optimize_No29_MagVenture_C-B60_Fig8_nii.msh)
+20. Repeat 19. but this time load in target.msh again
+21. In the menu on the left uncheck "[0] Target", check "[4] normE", and check "[8] coil direction"
+22. Click Tools in the top menu bar and then Visibility
+23. Select Surface 1005 and click apply
+24. You should see the optimal coil direction (green bar) overlaid on the initial set of simulated orientations on top of the norm of the electric field on the subject's head surface.
+Write down the optimal angle the green bar is on.
+
+
